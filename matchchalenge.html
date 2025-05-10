@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Challenge Game</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f4f4f9;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .game-container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    .timer {
+      font-size: 1.2em;
+      color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container text-center">
+    <h2 class="mb-4">🔥 Math Challenge Game 🔢</h2>
+    <div class="mb-3">
+      <div id="question" class="fw-bold fs-4"></div>
+    </div>
+    <input type="number" id="answer" class="form-control mb-3" placeholder="Your answer here">
+    <button class="btn btn-success mb-3" onclick="checkAnswer()">Submit</button>
+    <div id="feedback" class="mb-3"></div>
+    <div class="timer">⏱ Time Left: <span id="timer">30</span> seconds</div>
+    <div class="mt-3">Score: <span id="score">0</span></div>
+  </div>
+
+  <script>
+    let num1, num2, operator, correctAnswer;
+    let score = 0;
+    let timeLeft = 30;
+    let timerInterval;
+
+    function generateQuestion() {
+      const operators = ['+', '-', '*'];
+      num1 = Math.floor(Math.random() * 20 + 1);
+      num2 = Math.floor(Math.random() * 20 + 1);
+      operator = operators[Math.floor(Math.random() * operators.length)];
+
+      switch (operator) {
+        case '+': correctAnswer = num1 + num2; break;
+        case '-': correctAnswer = num1 - num2; break;
+        case '*': correctAnswer = num1 * num2; break;
+      }
+
+      document.getElementById('question').innerText = `${num1} ${operator} ${num2} = ?`;
+      document.getElementById('answer').value = '';
+      document.getElementById('feedback').innerText = '';
+    }
+
+    function checkAnswer() {
+      const userAnswer = parseInt(document.getElementById('answer').value);
+      const feedback = document.getElementById('feedback');
+
+      if (userAnswer === correctAnswer) {
+        feedback.innerText = '✅ Correct!';
+        score++;
+        timeLeft += 5;
+      } else {
+        feedback.innerText = '❌ Wrong!';
+        timeLeft -= 3;
+      }
+
+      document.getElementById('score').innerText = score;
+      generateQuestion();
+    }
+
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').innerText = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById('question').innerText = '⏹ Game Over!';
+          document.getElementById('feedback').innerText = `Your final score: ${score}`;
+          document.getElementById('answer').disabled = true;
+        }
+      }, 1000);
+    }
+
+    // Initialize game
+    generateQuestion();
+    startTimer();
+  </script>
+</body>
+</html>
